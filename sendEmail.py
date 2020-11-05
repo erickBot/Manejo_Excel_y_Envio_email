@@ -19,7 +19,7 @@ def sendEmail(destinatarios):
     msg = MIMEMultipart()
     message = "Test send email XD"
     ruta_adjunto = "inventarioJunio2020.xlsx"
-    nombre_adjunto = "inventarioJunio2020.xlsx"
+    nombre_adjunto = "ArchivoAdjunto"
     #configura los parametros del mensaje
     password = "epas2817epas"
     msg['From'] ="erickpasache0@gmail.com"
