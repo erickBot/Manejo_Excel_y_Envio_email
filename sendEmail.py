@@ -3,28 +3,46 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
+import openpyxl
+import time
 
 def run():
+    cont = 0
+    name_file = "Lista_Sensores_HGAS.xlsx"
+    file = openpyxl.load_workbook(name_file, data_only=True)
+    sheet = file.get_sheet_by_name('LEL')
+    cell_all = sheet['I4':'I19']
+    for row in cell_all:
+        for cell in row:
+            if cell.value < 30 :
+                cont = cont + 1
+
+    if cont > 0 :
+        print(cont)
+        file.save(name_file)
+        procesaDestinatarios()
+
+def procesaDestinatarios():
+    
     destinatarios = {
         "user1": "erick.pasache@pason.com",
-        "user2": "epasache_28@hotmail.com",
-        "user3": "johnnel.panduro@pason.com"
+        "user2": "epasache_28@hotmail.com"
     }
 
-    for i in ["user1", "user2", "user3"]:
+    for i in ["user1", "user2"]:
         sendEmail(destinatarios[i])
 
 def sendEmail(destinatarios):
     #crea la instancia del objeto de mensaje
     msg = MIMEMultipart()
-    message = "Test send email XD"
-    ruta_adjunto = "inventarioJunio2020.xlsx"
-    nombre_adjunto = "ArchivoAdjunto"
+    message = "Hola a todos \n\nSe envia lista actualizada de sensores HGAS que estan a punto de expirar su fecha de calibracion.\n\nNo responder soy un Bot."
+    ruta_adjunto = "Lista_Sensores_HGAS.xlsx"
+    nombre_adjunto = "Lista_Sensores_HGAS.xlsx"
     #configura los parametros del mensaje
-    password = "epas2817epas"
-    msg['From'] ="erickpasache0@gmail.com"
+    password = "99e12438cf"
+    msg['From'] ="soyunbot2817@gmail.com"
     msg['To'] = destinatarios
-    msg['Subject'] = "Subscription"
+    msg['Subject'] = "Lista de Sensores HGAS por expirar en Talara"
     #agrega el cuerpo del mensaje
     msg.attach(MIMEText(message, 'plain'))
     # Abrimos el archivo que vamos a adjuntar
