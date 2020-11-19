@@ -5,39 +5,62 @@ from email import encoders
 import smtplib
 import openpyxl
 import time
+import os
+from os import remove
+from datetime import datetime, date, time, timedelta
+import calendar
+
+mylist = []
 
 def run():
-    cont = 0
-    name_file = "Lista_Sensores_HGAS.xlsx"
-    file = openpyxl.load_workbook(name_file, data_only=True)
-    sheet = file.get_sheet_by_name('LEL')
-    cell_all = sheet['I4':'I19']
-    for row in cell_all:
-        for cell in row:
-            if cell.value < 30 :
-                cont = cont + 1
+    enviarEmail = False
 
-    if cont > 0 :
-        print(cont)
-        file.save(name_file)
+    name_file = "Lista_de_Sensores_HGAS.xlsx"
+    file = openpyxl.load_workbook(name_file)
+    sheet1 = file.get_sheet_by_name('LEL')
+    sheet2 = file.get_sheet_by_name('H2S')
+
+    porVencer_lel = sheet1['I24'].value
+    vencidos_lel  = sheet1['I25'].value
+    vigentes_lel  = sheet1['I26'].value
+    porVencer_h2s = sheet2['I24'].value
+    vencidos_h2s  = sheet2['I25'].value
+    vigentes_h2s  = sheet2['I26'].value
+
+    mylist.append(porVencer_lel)
+    mylist.append(vencidos_lel)
+    mylist.append(vigentes_lel)
+    mylist.append(porVencer_h2s)
+    mylist.append(vencidos_h2s)
+    mylist.append(vigentes_h2s)
+
+    if porVencer_lel > 0 or vencidos_lel > 0:
+        enviarEmail = True
+
+    if porVencer_h2s > 0 or vencidos_h2s > 0:
+        enviarEmail = True
+
+    if (enviarEmail):
         procesaDestinatarios()
 
+    file.close()
+
 def procesaDestinatarios():
-    
+
     destinatarios = {
-        "user1": "erick.pasache@pason.com",
+        "user1": "erickpasache0@gmail.com",
         "user2": "epasache_28@hotmail.com"
     }
 
-    for i in ["user1", "user2"]:
+    for i in destinatarios:
         sendEmail(destinatarios[i])
 
 def sendEmail(destinatarios):
     #crea la instancia del objeto de mensaje
     msg = MIMEMultipart()
-    message = "Hola a todos \n\nSe envia lista actualizada de sensores HGAS que estan a punto de expirar su fecha de calibracion.\n\nNo responder soy un Bot."
-    ruta_adjunto = "Lista_Sensores_HGAS.xlsx"
-    nombre_adjunto = "Lista_Sensores_HGAS.xlsx"
+    message = "Hola a todos \n\nSe envia lista actualizada de sensores HGAS. Hay " + str(mylist[0]) + " sensores LEL por vencer, " + str(mylist[1]) + " sensores LEL vencidos, " + str(mylist[2]) + " sensores LEL vigentes,  " + str(mylist[3]) + " sensores H2S por vencer, " + str(mylist[4]) + " sensores H2S vencidos, y " + str(mylist[5])+ " sensores H2S vigentes.\n\nSoy un Bot."
+    ruta_adjunto = "Lista_de_Sensores_HGAS.xlsx"
+    nombre_adjunto = "Lista_de_Sensores_HGAS.xlsx"
     #configura los parametros del mensaje
     password = "99e12438cf"
     msg['From'] ="soyunbot2817@gmail.com"
