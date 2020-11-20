@@ -62,8 +62,8 @@ def sendEmail(destinatarios):
     ruta_adjunto = "Lista_de_Sensores_HGAS.xlsx"
     nombre_adjunto = "Lista_de_Sensores_HGAS.xlsx"
     #configura los parametros del mensaje
-    password = "99e12438cf"
-    msg['From'] ="soyunbot2817@gmail.com"
+    password = "********"
+    msg['From'] ="ejemplo@gmail.com"
     msg['To'] = destinatarios
     msg['Subject'] = "Lista de Sensores HGAS por expirar en Talara"
     #agrega el cuerpo del mensaje
